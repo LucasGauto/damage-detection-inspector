@@ -186,62 +186,54 @@ with gr.Blocks(title="Analisis de Partes y Daños") as demo:
         "condicionada por parte con el modelo `models/classificator/best.pth`."
     )
 
-    with gr.Tab("Deteccion"):
-        with gr.Row():
-            detection_image_input = gr.Image(type="pil", label="Imagen de entrada")
-            detection_image_output = gr.Image(type="pil", label="Imagen con detecciones")
+    # with gr.Tab("Deteccion"):
+    #     with gr.Row():
+    #         detection_image_input = gr.Image(type="pil", label="Imagen de entrada")
+    #         detection_image_output = gr.Image(type="pil", label="Imagen con detecciones")
 
-        conf_slider = gr.Slider(
-            minimum=0.05,
-            maximum=0.95,
-            value=0.25,
-            step=0.05,
-            label="Umbral de confianza",
-        )
-        detect_button = gr.Button("Detectar partes")
-        detection_summary_output = gr.Markdown(value="", label="Resumen")
+    #     conf_slider = gr.Slider(
+    #         minimum=0.05,
+    #         maximum=0.95,
+    #         value=0.25,
+    #         step=0.05,
+    #         label="Umbral de confianza",
+    #     )
+    #     detect_button = gr.Button("Detectar partes")
+    #     detection_summary_output = gr.Markdown(value="", label="Resumen")
 
-        detect_button.click(
-            fn=detect_parts,
-            inputs=[detection_image_input, conf_slider],
-            outputs=[detection_image_output, detection_summary_output],
-        )
+    #     detect_button.click(
+    #         fn=detect_parts,
+    #         inputs=[detection_image_input, conf_slider],
+    #         outputs=[detection_image_output, detection_summary_output],
+    #     )
 
     with gr.Tab("Clasificacion de daño"):
         cls_detections_state = gr.State([])
 
+        # Interfaz
+        # Fila de Deteccion
+        gr.Markdown("#### Deteccion de partes")
         with gr.Row():
-            with gr.Column():
-                classification_image_input = gr.Image(
-                    type="pil",
-                    label="Imagen del vehiculo",
-                )
-                gr.Markdown("#### GradCAM")
+            
+            with gr.Column(scale=1):
                 with gr.Row():
-                    gradcam_s2_output = gr.Image(
-                        type="pil",
-                        label="Stage 2 (penultima capa)",
-                        interactive=False,
-                    )
-                    gradcam_s3_output = gr.Image(
-                        type="pil",
-                        label="Stage 3 (ultima capa)",
-                        interactive=False,
-                    )
+                    classification_image_input = gr.Image(type="pil", label="Imagen del Vehiculo")
+                # with gr.Row():
+                #     cls_conf_slider = gr.Slider(minimum=0.00, maximum=1.0, value=0.1, step=0.05, label="Umbral de confianza (deteccion)")
+                # with gr.Row():
+                #     cls_detect_button = gr.Button("Detectar partes")
+            with gr.Column(scale=1):
+                classification_image_detected = gr.Image(type="pil", label="Imagen con detecciones", interactive=True, scale=1)
+
+        with gr.Row():
+            cls_conf_slider = gr.Slider(minimum=0.00, maximum=1.0, value=0.1, step=0.05, label="Umbral de confianza (deteccion)")
+            cls_detect_button = gr.Button("Detectar partes")
+
+        # Fila de Clasificacion
+        gr.Markdown("#### Clasificacion de daño")
+        with gr.Row():
+    
             with gr.Column():
-                cls_conf_slider = gr.Slider(
-                    minimum=0.05,
-                    maximum=0.95,
-                    value=0.25,
-                    step=0.05,
-                    label="Umbral de confianza (deteccion)",
-                )
-                cls_detect_button = gr.Button("Detectar partes")
-                classification_image_detected = gr.Image(
-                    type="pil",
-                    label="Imagen con detecciones",
-                    interactive=False,
-                )
                 part_input = gr.Dropdown(
                     choices=[],
                     value=None,
@@ -249,12 +241,30 @@ with gr.Blocks(title="Analisis de Partes y Daños") as demo:
                     interactive=True,
                 )
                 classify_button = gr.Button("Clasificar daño")
+                
+            with gr.Column():
                 classification_summary_output = gr.Textbox(
                     label="Resultado",
                     interactive=False,
                     lines=3,
                 )
-                classification_scores_output = gr.Label(label="Probabilidades")
+
+        with gr.Row():
+            classification_scores_output = gr.Label(label="Probabilidades")
+
+        with gr.Row():
+            with gr.Column():
+                gradcam_s2_output = gr.Image(
+                    type="pil",
+                    label="Stage 2 (penultima capa)",
+                    interactive=True,
+                )
+            with gr.Column():
+                gradcam_s3_output = gr.Image(
+                    type="pil",
+                    label="Stage 3 (ultima capa)",
+                    interactive=True,
+                )
 
         cls_detect_button.click(
             fn=classify_detect_parts,
@@ -270,4 +280,4 @@ with gr.Blocks(title="Analisis de Partes y Daños") as demo:
 
 
 if __name__ == "__main__":
-    demo.launch()
+    demo.launch(debug=True)
