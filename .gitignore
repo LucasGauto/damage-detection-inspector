@@ -18,3 +18,8 @@
 
 # Models
 /models
+
+# Ignorar PyCache
+__pycache__/
+*.pyc
+*.pyo
