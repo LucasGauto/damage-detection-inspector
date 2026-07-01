@@ -1,0 +1,20 @@
+# Ignore virtual environment directories
+/venv
+/.venv
+
+# Images
+*.png
+*.jpg
+*.jpeg
+*.pdf
+
+# Models
+*.pt
+*.pth
+*.h5
+
+# Environment files
+.env
+
+# Models
+/models
